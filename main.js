@@ -315,7 +315,7 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isStartEnabled = true;
-        document.body.style.cursor = "url('green.png'), auto";
+        document.body.style.cursor = "url('./assets/green.png'), auto";
     });
 
     end.addEventListener("mousedown", () => {
@@ -324,7 +324,7 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isEndEnabled = true;
-        document.body.style.cursor = "url('red.png'), auto";
+        document.body.style.cursor = "url('./assets/red.png'), auto";
     });
 
     erasor.addEventListener("mousedown", () => {
@@ -333,7 +333,7 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isDrawingEnabled = false;
         isErasorEnabled = true;
-        document.body.style.cursor = "url('eraser.png'), auto";
+        document.body.style.cursor = "url('./assets/eraser.png'), auto";
     });
     drawing.addEventListener("mousedown", () => {
         event.preventDefault();
@@ -341,7 +341,7 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isErasorEnabled = false;
         isDrawingEnabled = true;
-        document.body.style.cursor = "url('white.png'), auto";
+        document.body.style.cursor = "url('./assets/white.png'), auto";
     });
 }
 
