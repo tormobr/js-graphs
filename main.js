@@ -5,6 +5,7 @@ const targetXY = [dimX - 1, dimY - 1]
 
 async function bfs(isDfs) {
     clearDrawings();
+    disableButtons();
     var grid = document.getElementById("grid");
     const start = [0, 0, []];
     visited = []
@@ -32,7 +33,7 @@ async function bfs(isDfs) {
         await sleep(10);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
-            markPath(newPath, grid);
+            await markPath(newPath, grid);
             break;
         }
 
@@ -47,15 +48,14 @@ async function bfs(isDfs) {
 }
 
 function manhatten(x1, x2, y1, y2) {
-    var hFactor = document.getElementById("h_factor").value;
+    var hFactor = document.getElementById("slider").value;
 
-    console.log(hFactor);
-    var regexp = /^\d+\.\d{0,2}$/;
-    if (!regexp.test(hFactor)) {
+    var decimal = /^\d+\.\d{0,2}$/;
+    var integer = /^\d+$/;
+    if (!decimal.test(hFactor) && !integer.test(hFactor)) {
         hFactor = 1;
     }
-    console.log(hFactor);
-    return Math.abs(x2 - x1) + Math.abs(y2 - y1) * hFactor;
+    return (Math.abs(x2 - x1) + Math.abs(y2 - y1)) * hFactor;
 }
 
 function euclidian(x1, x2, y1, y2) {
@@ -67,11 +67,13 @@ function euclidian(x1, x2, y1, y2) {
 function getMin(queue) {
     var minValue = 1000000000000000;
     var minIndex = -1;
+    minPath = 0;
     for (var i = 0; i < queue.length; i++) {
         var [x, y, path, H] = queue[i];
-        if (H < minValue) {
+        if (H < minValue || (H == minValue && path.length > minPath)) {
             minValue = H;
             minIndex = i;
+            minPath = path.length;
         }
     }
 
@@ -80,6 +82,7 @@ function getMin(queue) {
 
 async function astar() {
     clearDrawings();
+    disableButtons();
     var grid = document.getElementById("grid");
     const H = manhatten(startXY[0], targetXY[0], startXY[1], targetXY[1]);
     const start = [startXY[0], startXY[1], [], H];
@@ -106,7 +109,7 @@ async function astar() {
         await sleep(10);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
-            markPath(newPath, grid);
+            await markPath(newPath, grid);
             break;
         }
 
@@ -118,7 +121,24 @@ async function astar() {
             }
         });
     }
+
+    enableButtons();
 }
+
+function disableButtons() {
+    buttons = document.getElementsByClassName("button");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+    }
+}
+
+function enableButtons() {
+    buttons = document.getElementsByClassName("button");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = false;
+    }
+}
+
 function clearDrawings() {
     for (var r = 0; r < dimY; r++) {
         for (var c = 0; c < dimX; c++) {
@@ -151,7 +171,7 @@ async function markPath(path, grid) {
     for (var i = 0; i < path.length; i++) {
         [x, y] = path[i]
         grid.children[y].children[x].className = "path_cell";
-        await sleep(50);
+        await sleep(10);
     }
 }
 
@@ -189,6 +209,7 @@ function createGrid(){
 
 function addEventListeners(cell) {
     cell.addEventListener("mouseover", event => {
+        event.preventDefault();
         if (event.buttons == 1) {
             if (document.getElementById("draw_wall").checked) {
                 event.srcElement.className = "wall_cell";
@@ -198,6 +219,7 @@ function addEventListeners(cell) {
         }
     });
     cell.addEventListener("mousedown", event => {
+        event.preventDefault();
         if (event.buttons == 1) {
             if (document.getElementById("draw_wall").checked) {
                 event.srcElement.className = "wall_cell";
@@ -214,4 +236,12 @@ function sleep(ms) {
 
 window.onload = () => {
     createGrid();
+    var slider = document.getElementById("slider");
+    var output = document.getElementById("slider_value");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
 };
+
