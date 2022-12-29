@@ -1,13 +1,17 @@
-const dimY = 30;
-const dimX = 70;
-const startXY = [0, 0]
-const targetXY = [dimX - 1, dimY - 1]
+var dimY = 30;
+var dimX = 70;
+var startXY = [0, 0]
+var targetXY = [dimX - 1, dimY - 1]
+var isStartEnabled = false;
+var isEndEnabled = false;
+var isErasorEnabled = false;
+var isDrawingEnabled = false;
 
 async function bfs(isDfs) {
     clearDrawings();
     disableButtons();
     var grid = document.getElementById("grid");
-    const start = [0, 0, []];
+    const start = [startXY[0], startXY[1], []];
     visited = []
     q = [start];
     
@@ -29,7 +33,9 @@ async function bfs(isDfs) {
 
 
 
-        grid.children[current[1]].children[current[0]].className = "taken_cell";
+        if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
+            grid.children[current[1]].children[current[0]].className = "taken_cell";
+        }
         await sleep(200);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
@@ -92,8 +98,8 @@ async function astar() {
     clearDrawings();
     disableButtons();
     var grid = document.getElementById("grid");
-    const H = manhatten(startXY[0], targetXY[0], startXY[1], targetXY[1]);
-    const start = [startXY[0], startXY[1], [], H];
+    var H = manhatten(startXY[0], targetXY[0], startXY[1], targetXY[1]);
+    var start = [startXY[0], startXY[1], [], H];
     visited = []
     q = [start];
     
@@ -113,7 +119,9 @@ async function astar() {
 
 
 
-        grid.children[current[1]].children[current[0]].className = "taken_cell";
+        if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
+            grid.children[current[1]].children[current[0]].className = "taken_cell";
+        }
         await sleep(200);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
@@ -167,7 +175,9 @@ function clearDrawings() {
 function clearGrid() {
     for (var r = 0; r < dimY; r++) {
         for (var c = 0; c < dimX; c++) {
-            grid.children[r].children[c].className = "free_cell"
+            if (!["start_cell", "end_cell"].includes(grid.children[r].children[c].className)) {
+                grid.children[r].children[c].className = "free_cell"
+            }
         }
     }
 }
@@ -184,17 +194,21 @@ async function randomGrid() {
             }
         }
     }
-    grid.children[startXY[1]].children[startXY[0]].className = "free_cell";
-    grid.children[targetXY[1]].children[targetXY[0]].className = "free_cell";
+    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
+    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
 }
 
 async function markPath(path, grid) {
     path = path.reverse()
     for (var i = 0; i < path.length; i++) {
         [x, y] = path[i]
-        grid.children[y].children[x].className = "path_cell";
+        if (!["start_cell", "end_cell"].includes(grid.children[y].children[x].className)) {
+            grid.children[y].children[x].className = "path_cell";
+        }
         await sleep(200);
     }
+    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
+    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
 }
 
 function outOfBounds(x, y) {
@@ -233,9 +247,10 @@ function addEventListeners(cell) {
     cell.addEventListener("mouseover", event => {
         event.preventDefault();
         if (event.buttons == 1) {
-            if (document.getElementById("draw_wall").checked) {
+            if (isErasorEnabled) {
                 event.srcElement.className = "wall_cell";
-            } else{
+            }
+            else if (isDrawingEnabled){
                 event.srcElement.className = "free_cell";
             }
         }
@@ -243,10 +258,33 @@ function addEventListeners(cell) {
     cell.addEventListener("mousedown", event => {
         event.preventDefault();
         if (event.buttons == 1) {
-            if (document.getElementById("draw_wall").checked) {
+            if (isErasorEnabled) {
                 event.srcElement.className = "wall_cell";
-            } else{
+            }
+            else if (isDrawingEnabled){
                 event.srcElement.className = "free_cell";
+            }
+            else if (isStartEnabled) {
+                grid.children[startXY[1]].children[startXY[0]].className = "free_cell";
+                for (var r = 0; r < dimY; r++) {
+                    for (var c = 0; c < dimX; c++) {
+                        if (grid.children[r].children[c] == event.srcElement) {
+                            startXY = [c, r];
+                            grid.children[r].children[c].className = "start_cell";
+                        }
+                    }
+                }
+            }
+            else if (isEndEnabled) {
+                grid.children[targetXY[1]].children[targetXY[0]].className = "free_cell";
+                for (var r = 0; r < dimY; r++) {
+                    for (var c = 0; c < dimX; c++) {
+                        if (grid.children[r].children[c] == event.srcElement) {
+                            targetXY = [c, r];
+                            grid.children[r].children[c].className = "end_cell";
+                        }
+                    }
+                }
             }
         }
     });
@@ -254,12 +292,58 @@ function addEventListeners(cell) {
 
 function sleep(ms) {
     var sleepTime = ms / document.getElementById("animation_slider").value;
-    console.log(sleepTime)
     return new Promise(resolve => setTimeout(resolve, sleepTime));
 }
 
 window.onload = () => {
     createGrid();
+    addSliderLogic();
+    addDrawingLogic();
+};
+
+function addDrawingLogic() {
+    var start = document.getElementById("start_cell");
+    var end = document.getElementById("end_cell");
+    var erasor = document.getElementById("erasor_cell");
+    var drawing = document.getElementById("draw_cell");
+
+    start.addEventListener("mousedown", () => {
+        event.preventDefault();
+        isEndEnabled = false;
+        isErasorEnabled = false;
+        isDrawingEnabled = false;
+        isStartEnabled = true;
+        document.body.style.cursor = "url('green.png'), auto";
+    });
+
+    end.addEventListener("mousedown", () => {
+        event.preventDefault();
+        isStartEnabled = false;
+        isErasorEnabled = false;
+        isDrawingEnabled = false;
+        isEndEnabled = true;
+        document.body.style.cursor = "url('red.png'), auto";
+    });
+
+    erasor.addEventListener("mousedown", () => {
+        event.preventDefault();
+        isStartEnabled = false;
+        isEndEnabled = false;
+        isDrawingEnabled = false;
+        isErasorEnabled = true;
+        document.body.style.cursor = "url('eraser.png'), auto";
+    });
+    drawing.addEventListener("mousedown", () => {
+        event.preventDefault();
+        isStartEnabled = false;
+        isEndEnabled = false;
+        isErasorEnabled = false;
+        isDrawingEnabled = true;
+        document.body.style.cursor = "url('white.png'), auto";
+    });
+}
+
+function addSliderLogic() {
     var slider = document.getElementById("slider");
     var output = document.getElementById("slider_value");
     output.innerHTML = slider.value;
@@ -275,5 +359,4 @@ window.onload = () => {
     animationSlider.oninput = function() {
         animationSliderOutput.innerHTML = this.value;
     }
-};
-
+}
