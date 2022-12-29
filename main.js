@@ -382,7 +382,12 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isStartEnabled = true;
-        document.body.style.cursor = "url('./assets/green.png'), auto";
+        document.getElementById("grid").style.cursor = "url('./assets/green.png'), auto";
+
+        start.style.border = "4px solid gold";
+        end.style.border = "0";
+        erasor.style.border = "0";
+        drawing.style.border = "0";
     });
 
     end.addEventListener("mousedown", () => {
@@ -391,7 +396,12 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isEndEnabled = true;
-        document.body.style.cursor = "url('./assets/red.png'), auto";
+        document.getElementById("grid").style.cursor = "url('./assets/red.png'), auto";
+
+        end.style.border = "4px solid gold";
+        start.style.border = "0";
+        erasor.style.border = "0";
+        drawing.style.border = "0";
     });
 
     erasor.addEventListener("mousedown", () => {
@@ -400,7 +410,12 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isDrawingEnabled = false;
         isErasorEnabled = true;
-        document.body.style.cursor = "url('./assets/eraser.png'), auto";
+        document.getElementById("grid").style.cursor = "url('./assets/eraser.png'), auto";
+
+        erasor.style.border = "4px solid gold";
+        end.style.border = "0";
+        start.style.border = "0";
+        drawing.style.border = "0";
     });
     drawing.addEventListener("mousedown", () => {
         event.preventDefault();
@@ -408,7 +423,12 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isErasorEnabled = false;
         isDrawingEnabled = true;
-        document.body.style.cursor = "url('./assets/white.png'), auto";
+        document.getElementById("grid").style.cursor = "url('./assets/white.png'), auto";
+
+        drawing.style.border = "4px solid gold";
+        end.style.border = "0";
+        erasor.style.border = "0";
+        start.style.border = "0";
     });
 }
 
