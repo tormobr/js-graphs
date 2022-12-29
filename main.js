@@ -47,7 +47,15 @@ async function bfs(isDfs) {
 }
 
 function manhatten(x1, x2, y1, y2) {
-    return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+    var hFactor = document.getElementById("h_factor").value;
+
+    console.log(hFactor);
+    var regexp = /^\d+\.\d{0,2}$/;
+    if (!regexp.test(hFactor)) {
+        hFactor = 1;
+    }
+    console.log(hFactor);
+    return Math.abs(x2 - x1) + Math.abs(y2 - y1) * hFactor;
 }
 
 function euclidian(x1, x2, y1, y2) {
@@ -106,7 +114,7 @@ async function astar() {
             const newX = current[0] + dx;
             const newY = current[1] + dy;
             if (!outOfBounds(newX, newY) && grid.children[newY].children[newX].className != "wall_cell") {
-                return q.push([newX, newY, newPath, manhatten(newX, targetXY[0], newY, targetXY[1])]);
+                return q.push([newX, newY, newPath, manhatten(newX, targetXY[0], newY, targetXY[1]) + newPath.length]);
             }
         });
     }
@@ -182,12 +190,20 @@ function createGrid(){
 function addEventListeners(cell) {
     cell.addEventListener("mouseover", event => {
         if (event.buttons == 1) {
-            event.srcElement.className = "free_cell";
+            if (document.getElementById("draw_wall").checked) {
+                event.srcElement.className = "wall_cell";
+            } else{
+                event.srcElement.className = "free_cell";
+            }
         }
     });
     cell.addEventListener("mousedown", event => {
         if (event.buttons == 1) {
-            event.srcElement.className = "free_cell";
+            if (document.getElementById("draw_wall").checked) {
+                event.srcElement.className = "wall_cell";
+            } else{
+                event.srcElement.className = "free_cell";
+            }
         }
     });
 }
