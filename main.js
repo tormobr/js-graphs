@@ -1,4 +1,4 @@
-var dimY = 30;
+var dimY = 26;
 var dimX = 65;
 var startXY = [0, 0]
 var targetXY = [dimX - 1, dimY - 1]

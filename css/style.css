@@ -5,23 +5,30 @@ body {
     background-color: black;
     background-image: url("../assets/background.png");
 }
-button, select, input{
-    padding: 10px;
+button, select{
+    padding: 6px;
     font-size: 120%;
     color: purple;
     box-shadow: 0 0 50px 5px purple;
     margin: 10px;
 }
+
 select {
-    margin-bottom: 0px;
-    padding: 0px;
+    margin-bottom: -5px;
+    padding: 5px;
+}
+
+input {
+    margin: 2px;
+    padding: 0;
+    font-size: 100%;
 }
 
 .image-container {
     display: flex;
     justify-content: center;
 }
-img{
+.logo{
     max-width: 100%;
 }
 
@@ -48,7 +55,7 @@ img{
 
 #buttons{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-around;
     text-align: center;
@@ -63,7 +70,7 @@ img{
     display: flex;
     justify-content: space-around;
     text-align: center;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
 }
 
@@ -119,8 +126,22 @@ img{
 }
 
 @media screen and (max-width: 2000px) {
-    .free_cell, .taken_cell, .path_cell, .wall_cell, .start_cell, .end_cell{
+    .free_cell, .taken_cell, .path_cell, .wall_cell, .start_cell, .end_cell, .draw_cell, .erasor_cell{
         padding: 10px;
         margin: 1px;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    .free_cell, .taken_cell, .path_cell, .wall_cell, .start_cell, .end_cell, .draw_cell, .erasor_cell{
+        padding: 5px;
+        margin: 1px;
+    }
+}
+
+@media screen and (max-width: 920px) {
+    .free_cell, .taken_cell, .path_cell, .wall_cell, .start_cell, .end_cell, .draw_cell, .erasor_cell{
+        padding: 5px;
+        margin: 0px;
     }
 }

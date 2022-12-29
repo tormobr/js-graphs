@@ -40,18 +40,18 @@
         </div>
         <div id="content">
             <div class="image-container">
-                <img src="./assets/logo.png" alt="logo image">
+                <img class="logo" src="./assets/logo.png" alt="logo image">
             </div>
             <div id="grid"> </div>
             <div id="buttons">
                 <div id="algo-buttons">
                     <button class="button" type="button" onClick="clearGrid()" title="Reset the entire grid">Reset grid</button>
-                    <button class="button" type="button" onClick="randomGrid()" title="Generates random 'walls' inside the grid">Fill grid random walls</button>
+                    <button class="button" type="button" onClick="randomGrid()" title="Generates random 'walls' inside the grid">Random walls</button>
                     <button class="button" type="button" onClick="prims()" title="Generates maze using prim's algorithm">Generate maze</button>
                     <button class="button" type="button" onClick="bfs(false)" title="Uses breadt first pathfinding to find target">BFS </button>
                     <button class="button" type="button" onClick="bfs(true)" title="Uses depth first pathfinding to find target">DFS </button>
                     <button class="button" type="button" onClick="astar()" title="Uses a-star pathfinding to find target">A* </button>
-                    <button class="button" type="button" onClick="showHelpMenu()" title="Show help menu">Help!</button>
+                    <button class="button" type="button" onClick="showHelpMenu()" title="Show help menu">?</button>
                 </div>
 
                 <div id="cell_options">
@@ -77,19 +77,19 @@
                 </div>
 
                 <div id="sliders">
-                    <div>
+                    <div class="dropdown">
                         <select name="heuristic_function" id="heuristic_function">
                             <option value="manhatten">Manhatten</option>
                             <option value="euclidian">Euclidian</option>
                         </select>
                         <p>Heuristic function</p>
                     </div>
-                    <div class="slidecontainer">
+                    <div class="slide-container">
                         <input type="range" min="1" max="10.0" value="1.0" step="0.1" class="slider" id="slider">
                         <p>Heuristic factor: <span id="slider_value"></span></p>
                     </div>
 
-                    <div class="slidecontainer">
+                    <div class="slide-container">
                         <input type="range" min="1" max="50" value="25" step="1" class="slider" id="animation_slider">
                         <p>Animation speed: <span id="animation_slider_value"></span></p>
                     </div>
