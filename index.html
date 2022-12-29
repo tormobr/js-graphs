@@ -13,8 +13,35 @@
         <script src="main.js"></script>
     </head>
     <body>
+        <div class="help" id="help">
+            <h1>Welcome to the help page!</h1>
+            <h2>Purpose:</h2>
+            <p>The purpose of this website is to be able to play around with different pathfinding algorithms. Understanding the theory is of-course important, but can be tiresome. On this site all the tiresome math stuff happens under the hood, and you can enjoy the beautiful results! </p>
+            <h2>What are those buttons?</h2>
+            <p>The buttons are devided into three different sections.</p>
+            <ul>
+                <li>Algorithm stuff</li>
+                <ul>
+                    <li>Here you can do things such as execute different pathfinding algorithms. Some examples are BFS, DFS and A*. In this section you can also clear the grid, generate maps, etc.</li>
+                </ul>
+
+                <li>Painting stuff</li>
+                <ul>
+                    <li>You are equiped with a couple of painting brushes (for free). These can be used to draw cells, remove cells and change start and target positions</li>
+                </ul>
+
+                <li>More algorithm stuff</li>
+                <ul>
+                    <li>This sections allows you to tweek more detailed parameters. You can for example change the heuristic function being used for A* search. Changing these parameters affects how the algorithms from the first section behaves</li>
+                </ul>
+            </ul>
+            <br><br>
+            <h3>...To close this page, press "ESC" or click anywhere (except for the Help button)</h3>
+        </div>
         <div id="content">
-            <img src="./assets/logo.png" alt="logo image">
+            <div class="image-container">
+                <img src="./assets/logo.png" alt="logo image">
+            </div>
             <div id="grid"> </div>
             <div id="buttons">
                 <div id="algo-buttons">
@@ -24,6 +51,7 @@
                     <button class="button" type="button" onClick="bfs(false)" title="Uses breadt first pathfinding to find target">BFS </button>
                     <button class="button" type="button" onClick="bfs(true)" title="Uses depth first pathfinding to find target">DFS </button>
                     <button class="button" type="button" onClick="astar()" title="Uses a-star pathfinding to find target">A* </button>
+                    <button class="button" type="button" onClick="showHelpMenu()" title="Show help menu">Help!</button>
                 </div>
 
                 <div id="cell_options">

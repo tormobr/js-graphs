@@ -360,6 +360,14 @@ window.onload = () => {
     createGrid();
     addSliderLogic();
     addDrawingLogic();
+    document.body.addEventListener("mouseup", () => {
+        document.getElementById("help").style.display = "none";
+    });
+    document.body.addEventListener("keydown", (e) => {
+        if(e.key === "Escape") {
+            document.getElementById("help").style.display = "none";
+        }
+    });
 };
 
 function addDrawingLogic() {
@@ -421,3 +429,8 @@ function addSliderLogic() {
         animationSliderOutput.innerHTML = this.value;
     }
 }
+
+function showHelpMenu() {
+    document.getElementById("help").style.display = "block";
+}
+
