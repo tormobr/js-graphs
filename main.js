@@ -13,7 +13,7 @@ async function bfs(isDfs) {
     var grid = document.getElementById("grid");
     const start = [startXY[0], startXY[1], []];
     visited = []
-    q = [start];
+    var q = [start];
     
     while (q.length != 0) {
         let current;
@@ -101,7 +101,7 @@ async function astar() {
     var H = manhatten(startXY[0], targetXY[0], startXY[1], targetXY[1]);
     var start = [startXY[0], startXY[1], [], H];
     visited = []
-    q = [start];
+    var q = [start];
     
     while (q.length != 0) {
         let current;
@@ -141,6 +141,65 @@ async function astar() {
                     newH = euclidian(newX, targetXY[0], newY, targetXY[1]) + newPath.length;
                 }
                 return q.push([newX, newY, newPath, newH]);
+            }
+        });
+    }
+
+    enableButtons();
+}
+
+async function prims() {
+    disableButtons();
+    var grid = document.getElementById("grid");
+
+    for (var r = 0; r < dimY; r++) {
+        for (var c = 0; c < dimX; c++) {
+            grid.children[r].children[c].className = "wall_cell"
+        }
+    }
+    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
+    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
+
+    var start = [startXY[0], startXY[1], 0, 0];
+    visited = []
+    var q = [start];
+    
+    while (q.length != 0) {
+        var popIndex = Math.floor(Math.random()*q.length);
+        var current = q[popIndex];
+        q.splice(popIndex, 1)
+
+        // Check if current has been visited
+        if (visited.some(x => current[0] == x[0] && current[1] == x[1])){
+            continue;
+        }
+        visited.push(current);
+        if (!outOfBounds(current[0] - current[2], current[1] - current[3])) {
+            if (!["start_cell", "end_cell"].includes(grid.children[current[1] - current[3]].children[current[0] - current[2]].className)) {
+                grid.children[current[1] - current[3]].children[current[0] - current[2]].className = "free_cell";
+            }
+        }
+        if (!outOfBounds(current[0], current[1])) {
+            if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
+                grid.children[current[1]].children[current[0]].className = "free_cell";
+            }
+        } else {
+            continue;
+        }
+
+        await sleep(200);
+
+        // Base case
+        if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
+            await markPath(newPath, grid);
+            break;
+        }
+
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+            const newX = current[0] + 2*dx;
+            const newY = current[1] + 2*dy;
+            if (outOfBounds(newX, newY) || grid.children[newY].children[newX].className == "wall_cell") {
+                return q.push([newX, newY, dx, dy]);
             }
         });
     }
