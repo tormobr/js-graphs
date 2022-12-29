@@ -38,40 +38,42 @@
             <br><br>
             <h3>...To close this page, press "ESC" or click anywhere (except for the Help button)</h3>
         </div>
-        <div id="content">
+        <div class="content">
             <div class="image-container">
                 <img class="logo" src="./assets/logo.png" alt="logo image">
             </div>
             <div id="grid"> </div>
             <div id="buttons">
-                <div id="algo-buttons">
-                    <button class="button" type="button" onClick="clearGrid()" title="Reset the entire grid">Reset grid</button>
-                    <button class="button" type="button" onClick="randomGrid()" title="Generates random 'walls' inside the grid">Random walls</button>
-                    <button class="button" type="button" onClick="prims()" title="Generates maze using prim's algorithm">Generate maze</button>
-                    <button class="button" type="button" onClick="bfs(false)" title="Uses breadt first pathfinding to find target">BFS </button>
-                    <button class="button" type="button" onClick="bfs(true)" title="Uses depth first pathfinding to find target">DFS </button>
-                    <button class="button" type="button" onClick="astar()" title="Uses a-star pathfinding to find target">A* </button>
-                    <button class="button" type="button" onClick="showHelpMenu()" title="Show help menu">?</button>
+                <div>
+                    <select name="algo" id="algo">
+                        <option value="clear">Reset grid</option>
+                        <option value="random">Random grid</option>
+                        <option value="maze">Generate maze</option>
+                        <option value="bfs">BFS pathfinding</option>
+                        <option value="dfs">DFS pathfinding</option>
+                        <option value="astar">A* pathfinding</option>
+                    </select>
+                    <button class="execute_button" type="button" onClick="execute()" title="Execute selected action">Execute</button>
                 </div>
 
                 <div id="cell_options">
                     <div>
-                        <div id="start_cell" class="start_cell"> </div>
+                        <div id="start_cell" class="start_cell_image"> </div>
                         <p>Set start </p>
                     </div>
 
                     <div>
-                        <div id="end_cell" class="end_cell"> </div>
+                        <div id="end_cell" class="end_cell_image"> </div>
                         <p>Set target </p>
                     </div>
 
                     <div>
-                        <div id="draw_cell" class="draw_cell"> </div>
+                        <div id="draw_cell" class="draw_cell_image"> </div>
                         <p>Draw cells </p>
                     </div>
 
                     <div>
-                        <div id="erasor_cell" class="erasor_cell"> </div>
+                        <div id="erasor_cell" class="erasor_cell_image"> </div>
                         <p>Erase cells </p>
                     </div>
                 </div>
@@ -95,6 +97,7 @@
                     </div>
                 </div>
             </div>
+                <button class="help_button" type="button" onClick="showHelpMenu()" title="Show help menu">Help?</button>
         </div>
     </body>
 </html>

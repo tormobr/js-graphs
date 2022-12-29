@@ -434,3 +434,27 @@ function showHelpMenu() {
     document.getElementById("help").style.display = "block";
 }
 
+function execute() {
+    var selection = document.getElementById("algo").value;
+	switch(selection) {
+        case "clear":
+		    clearGrid();
+            break
+        case "random":
+		    randomGrid();
+		    break;
+        case "maze":
+            prims()
+		    break;
+        case "bfs":
+            bfs(false);
+		    break;
+        case "dfs":
+            bfs(true);
+		    break;
+        case "astar":
+            astar();
+		    break;
+	} 
+}
+
