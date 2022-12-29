@@ -1,0 +1,36 @@
+body {
+    text-align: center;
+}
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.free_cell, .taken_cell, .path_cell, .wall_cell{
+    padding: 15px;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.taken_cell {
+    box-shadow: inset 0 0 30px red;
+    transition: box-shadow 1s;
+}
+
+.wall_cell {
+    background-color: black;
+}
+
+.free_cell {
+    box-shadow: inset 0 0 2px black;
+}
+
+.path_cell {
+    box-shadow: inset 0 0 30px green;
+    transition: box-shadow 1s;
+}
+
+#grid{
+    border: 1px solid gray;
+}
