@@ -30,7 +30,7 @@ async function bfs(isDfs) {
 
 
         grid.children[current[1]].children[current[0]].className = "taken_cell";
-        await sleep(10);
+        await sleep(200);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
             await markPath(newPath, grid);
@@ -45,9 +45,11 @@ async function bfs(isDfs) {
             }
         });
     }
+
+    enableButtons();
 }
 
-function manhatten(x1, x2, y1, y2) {
+function getHFactor() {
     var hFactor = document.getElementById("slider").value;
 
     var decimal = /^\d+\.\d{0,2}$/;
@@ -55,13 +57,18 @@ function manhatten(x1, x2, y1, y2) {
     if (!decimal.test(hFactor) && !integer.test(hFactor)) {
         hFactor = 1;
     }
-    return (Math.abs(x2 - x1) + Math.abs(y2 - y1)) * hFactor;
+
+    return hFactor;
+}
+
+function manhatten(x1, x2, y1, y2) {
+    return (Math.abs(x2 - x1) + Math.abs(y2 - y1)) * getHFactor();
 }
 
 function euclidian(x1, x2, y1, y2) {
     var a = x1 - x2;
     var b = y1 - y2;
-    return (Math.sqrt( a*a + b*b));
+    return (Math.sqrt( a*a + b*b)) * getHFactor();
 }
 
 function getMin(queue) {
@@ -79,6 +86,7 @@ function getMin(queue) {
 
     return minIndex;
 }
+
 
 async function astar() {
     clearDrawings();
@@ -106,7 +114,7 @@ async function astar() {
 
 
         grid.children[current[1]].children[current[0]].className = "taken_cell";
-        await sleep(10);
+        await sleep(200);
 
         if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
             await markPath(newPath, grid);
@@ -117,7 +125,14 @@ async function astar() {
             const newX = current[0] + dx;
             const newY = current[1] + dy;
             if (!outOfBounds(newX, newY) && grid.children[newY].children[newX].className != "wall_cell") {
-                return q.push([newX, newY, newPath, manhatten(newX, targetXY[0], newY, targetXY[1]) + newPath.length]);
+                var hFunction = document.getElementById("heuristic_function").value
+                var newH;
+                if (hFunction == "manhatten") {
+                    newH = manhatten(newX, targetXY[0], newY, targetXY[1]) + newPath.length;
+                } else if (hFunction == "euclidian") {
+                    newH = euclidian(newX, targetXY[0], newY, targetXY[1]) + newPath.length;
+                }
+                return q.push([newX, newY, newPath, newH]);
             }
         });
     }
@@ -149,6 +164,14 @@ function clearDrawings() {
     }
 }
 
+function clearGrid() {
+    for (var r = 0; r < dimY; r++) {
+        for (var c = 0; c < dimX; c++) {
+            grid.children[r].children[c].className = "free_cell"
+        }
+    }
+}
+
 async function randomGrid() {
     var grid = document.getElementById("grid");
     for (var r = 0; r < dimY; r++) {
@@ -159,7 +182,6 @@ async function randomGrid() {
             } else {
                 grid.children[r].children[c].className = "wall_cell";
             }
-            await sleep(0.1);
         }
     }
     grid.children[startXY[1]].children[startXY[0]].className = "free_cell";
@@ -171,7 +193,7 @@ async function markPath(path, grid) {
     for (var i = 0; i < path.length; i++) {
         [x, y] = path[i]
         grid.children[y].children[x].className = "path_cell";
-        await sleep(10);
+        await sleep(200);
     }
 }
 
@@ -231,7 +253,9 @@ function addEventListeners(cell) {
 }
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    var sleepTime = ms / document.getElementById("animation_slider").value;
+    console.log(sleepTime)
+    return new Promise(resolve => setTimeout(resolve, sleepTime));
 }
 
 window.onload = () => {
@@ -242,6 +266,14 @@ window.onload = () => {
 
     slider.oninput = function() {
         output.innerHTML = this.value;
+    }
+
+    var animationSlider = document.getElementById("animation_slider");
+    var animationSliderOutput = document.getElementById("animation_slider_value");
+    animationSliderOutput.innerHTML = animationSlider.value;
+
+    animationSlider.oninput = function() {
+        animationSliderOutput.innerHTML = this.value;
     }
 };
 

@@ -4,13 +4,14 @@ body {
     background-color: black;
     background-image: url("background.png");
 }
-button {
+button, select {
     padding: 10px;
     font-size: 120%;
     color: purple;
     box-shadow: 0 0 10px gray;
     margin: 10px;
 }
+
 
 #content{
     margin: 55px;

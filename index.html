@@ -16,14 +16,28 @@
             <img src="./logo.png" alt="logo image">
             <div id="grid"> </div>
             <div id="buttons">
-                <button class="button" type="button" onClick="randomGrid()">Fill random squares with wall</button>
-                <button class="button" type="button" onClick="bfs(false)">BFS </button>
-                <button class="button" type="button" onClick="bfs(true)">DFS </button>
-                <button class="button" type="button" onClick="astar()">A* </button>
+                <button class="button" type="button" onClick="randomGrid()" title="Generates random 'walls' inside the grid">Fill grid random walls</button>
+                <button class="button" type="button" onClick="clearGrid()" title="Clear the entire grid">Clear grid</button>
+                <button class="button" type="button" onClick="bfs(false)" title="Uses breadt first pathfinding to find target">BFS </button>
+                <button class="button" type="button" onClick="bfs(true)" title="Uses depth first pathfinding to find target">DFS </button>
+                <button class="button" type="button" onClick="astar()" title="Uses a-star pathfinding to find target">A* </button>
                 <input type="checkbox" id="draw_wall"/>
                 <div class="slidecontainer">
                     <input type="range" min="1" max="10.0" value="1.0" step="0.1" class="slider" id="slider">
                     <p>Heuristic factor: <span id="slider_value"></span></p>
+                </div>
+
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="50" value="25" step="1" class="slider" id="animation_slider">
+                    <p>Animation speed: <span id="animation_slider_value"></span></p>
+                </div>
+
+                <div>
+                    <select name="heuristic_function" id="heuristic_function">
+                        <option value="manhatten">Manhatten</option>
+                        <option value="euclidian">Euclidian</option>
+                    </select>
+                    <p>Heuristic function</p>
                 </div>
             </div>
         </div>
