@@ -1,5 +1,5 @@
 var dimY = 30;
-var dimX = 70;
+var dimX = 65;
 var startXY = [0, 0]
 var targetXY = [dimX - 1, dimY - 1]
 var isStartEnabled = false;
@@ -241,6 +241,8 @@ function createGrid(){
 
         grid.appendChild(newRow);
     }
+    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
+    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
 }
 
 function addEventListeners(cell) {
