@@ -1,260 +1,53 @@
-var dimY = 26;
-var dimX = 65;
+var dimY = 30;
+var dimX = 80;
 var startXY = [0, 0]
 var targetXY = [dimX - 1, dimY - 1]
 var isStartEnabled = false;
 var isEndEnabled = false;
 var isErasorEnabled = false;
 var isDrawingEnabled = false;
-
-async function bfs(isDfs) {
-    clearDrawings();
-    disableButtons();
-    var grid = document.getElementById("grid");
-    const start = [startXY[0], startXY[1], []];
-    visited = []
-    var q = [start];
-    
-    while (q.length != 0) {
-        let current;
-        if (!isDfs) {
-            current = q.shift()
-        } else {
-            current = q.pop()
-        }
-
-        // Check if current has been visited
-        if (visited.some(x => current[0] == x[0] && current[1] == x[1])){
-            continue;
-        }
-        visited.push(current);
-        newPath = [...current[2]]
-        newPath.push(current)
+var grid;
 
 
-
-        if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
-            grid.children[current[1]].children[current[0]].className = "taken_cell";
-        }
-        await sleep(200);
-
-        if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
-            await markPath(newPath, grid);
-            break;
-        }
-
-        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
-            const newX = current[0] + dx;
-            const newY = current[1] + dy;
-            if (!outOfBounds(newX, newY) && grid.children[newY].children[newX].className != "wall_cell") {
-                q.push([newX, newY, newPath])
-            }
-        });
-    }
-
-    enableButtons();
-}
-
-function getHFactor() {
-    var hFactor = document.getElementById("slider").value;
-
-    var decimal = /^\d+\.\d{0,2}$/;
-    var integer = /^\d+$/;
-    if (!decimal.test(hFactor) && !integer.test(hFactor)) {
-        hFactor = 1;
-    }
-
-    return hFactor;
-}
-
-function manhatten(x1, x2, y1, y2) {
-    return (Math.abs(x2 - x1) + Math.abs(y2 - y1)) * getHFactor();
-}
-
-function euclidian(x1, x2, y1, y2) {
-    var a = x1 - x2;
-    var b = y1 - y2;
-    return (Math.sqrt( a*a + b*b)) * getHFactor();
-}
-
-function getMin(queue) {
-    var minValue = 1000000000000000;
-    var minIndex = -1;
-    minPath = 0;
-    for (var i = 0; i < queue.length; i++) {
-        var [x, y, path, H] = queue[i];
-        if (H < minValue || (H == minValue && path.length > minPath)) {
-            minValue = H;
-            minIndex = i;
-            minPath = path.length;
-        }
-    }
-
-    return minIndex;
-}
-
-
-async function astar() {
-    clearDrawings();
-    disableButtons();
-    var grid = document.getElementById("grid");
-    var H = manhatten(startXY[0], targetXY[0], startXY[1], targetXY[1]);
-    var start = [startXY[0], startXY[1], [], H];
-    visited = []
-    var q = [start];
-    
-    while (q.length != 0) {
-        let current;
-        minIndex = getMin(q);
-        current = q[minIndex];
-        q.splice(minIndex, 1);
-
-        // Check if current has been visited
-        if (visited.some(x => current[0] == x[0] && current[1] == x[1])){
-            continue;
-        }
-        visited.push(current);
-        newPath = [...current[2]]
-        newPath.push(current)
-
-
-
-        if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
-            grid.children[current[1]].children[current[0]].className = "taken_cell";
-        }
-        await sleep(200);
-
-        if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
-            await markPath(newPath, grid);
-            break;
-        }
-
-        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
-            const newX = current[0] + dx;
-            const newY = current[1] + dy;
-            if (!outOfBounds(newX, newY) && grid.children[newY].children[newX].className != "wall_cell") {
-                var hFunction = document.getElementById("heuristic_function").value
-                var newH;
-                if (hFunction == "manhatten") {
-                    newH = manhatten(newX, targetXY[0], newY, targetXY[1]) + newPath.length;
-                } else if (hFunction == "euclidian") {
-                    newH = euclidian(newX, targetXY[0], newY, targetXY[1]) + newPath.length;
-                }
-                return q.push([newX, newY, newPath, newH]);
-            }
-        });
-    }
-
-    enableButtons();
-}
-
-async function prims() {
-    disableButtons();
-    var grid = document.getElementById("grid");
-
-    for (var r = 0; r < dimY; r++) {
-        for (var c = 0; c < dimX; c++) {
-            grid.children[r].children[c].className = "wall_cell"
-        }
-    }
-    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
-    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
-
-    var start = [startXY[0], startXY[1], 0, 0];
-    visited = []
-    var q = [start];
-    
-    while (q.length != 0) {
-        var popIndex = Math.floor(Math.random()*q.length);
-        var current = q[popIndex];
-        q.splice(popIndex, 1)
-
-        // Check if current has been visited
-        if (visited.some(x => current[0] == x[0] && current[1] == x[1])){
-            continue;
-        }
-        visited.push(current);
-        if (!outOfBounds(current[0] - current[2], current[1] - current[3])) {
-            if (!["start_cell", "end_cell"].includes(grid.children[current[1] - current[3]].children[current[0] - current[2]].className)) {
-                grid.children[current[1] - current[3]].children[current[0] - current[2]].className = "free_cell";
+function setGridValues(className, evaluator) {
+    for (var y = 0; y < dimY; y++) {
+        for (var x = 0; x < dimX; x++) {
+            if (evaluator(x, y)){
+                grid.children[y].children[x].className = className;
             }
         }
-        if (!outOfBounds(current[0], current[1])) {
-            if (!["start_cell", "end_cell"].includes(grid.children[current[1]].children[current[0]].className)) {
-                grid.children[current[1]].children[current[0]].className = "free_cell";
-            }
-        } else {
-            continue;
-        }
-
-        await sleep(200);
-
-        // Base case
-        if (current[0] == targetXY[0] && current[1] == targetXY[1]) {
-            await markPath(newPath, grid);
-            break;
-        }
-
-        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
-            const newX = current[0] + 2*dx;
-            const newY = current[1] + 2*dy;
-            if (outOfBounds(newX, newY) || grid.children[newY].children[newX].className == "wall_cell") {
-                return q.push([newX, newY, dx, dy]);
-            }
-        });
     }
-
-    enableButtons();
 }
 
 function disableButtons() {
-    buttons = document.getElementsByClassName("button");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = true;
-    }
+    document.getElementById("execute-button").disabled = true;
 }
 
 function enableButtons() {
-    buttons = document.getElementsByClassName("button");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = false;
-    }
+    document.getElementById("execute-button").disabled = false;
+}
+
+function isStartOrEnd(x, y) {
+    return ["start_cell", "end_cell"].includes(grid.children[y].children[x].className);
+}
+
+function isPathOrSearch(x, y) {
+    return ["path_cell", "search_cell"].includes(grid.children[y].children[x].className);
 }
 
 function clearDrawings() {
-    for (var r = 0; r < dimY; r++) {
-        for (var c = 0; c < dimX; c++) {
-            if (["path_cell", "taken_cell"].includes(grid.children[r].children[c].className)){
-                grid.children[r].children[c].className = "free_cell"
-            }
-        }
-    }
+    setGridValues("free_cell", isPathOrSearch);
 }
 
 function clearGrid() {
-    for (var r = 0; r < dimY; r++) {
-        for (var c = 0; c < dimX; c++) {
-            if (!["start_cell", "end_cell"].includes(grid.children[r].children[c].className)) {
-                grid.children[r].children[c].className = "free_cell"
-            }
-        }
-    }
+    setGridValues("free_cell", (x, y) => !isStartOrEnd(x, y));
 }
 
-async function randomGrid() {
-    var grid = document.getElementById("grid");
-    for (var r = 0; r < dimY; r++) {
-        for (var c = 0; c < dimX; c++) {
-            const random = Math.random();
-            if (random < 0.75) {
-                grid.children[r].children[c].className = "free_cell";
-            } else {
-                grid.children[r].children[c].className = "wall_cell";
-            }
-        }
-    }
-    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
-    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
+function resetStartEndCells() {
+    var [startX, startY] = startXY;
+    var [targetX, targetY] = targetXY;
+    grid.children[startY].children[startX].className = "start_cell";
+    grid.children[targetY].children[targetX].className = "end_cell";
 }
 
 async function markPath(path, grid) {
@@ -266,42 +59,29 @@ async function markPath(path, grid) {
         }
         await sleep(200);
     }
-    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
-    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
-}
 
-function outOfBounds(x, y) {
-    if (x < 0 || x >= dimX) {
-        return true;
-    }
-    if (y < 0 || y >= dimY) {
-        return true;
-    }
-
-    return false
+    resetStartEndCells();
 }
 
 function createGrid(){
-    var grid = document.getElementById("grid");
     grid.innerHTML = "";
 
-    for (var r = 0; r < dimY; r++) {
-
+    for (var y = 0; y < dimY; y++) {
+        // Create row
         var newRow = document.createElement("div");
         newRow.className = "row";
 
-        for (var c = 0; c < dimX; c++) {
+        // Create cells and add them to row
+        for (var x = 0; x < dimX; x++) {
             var newCell = document.createElement("div");
             newCell.className = "free_cell";
             addEventListeners(newCell);
-
             newRow.appendChild(newCell);
         }
 
         grid.appendChild(newRow);
     }
-    grid.children[startXY[1]].children[startXY[0]].className = "start_cell";
-    grid.children[targetXY[1]].children[targetXY[0]].className = "end_cell";
+    resetStartEndCells();
 }
 
 function addEventListeners(cell) {
@@ -357,6 +137,7 @@ function sleep(ms) {
 }
 
 window.onload = () => {
+    grid = document.getElementById("grid");
     createGrid();
     addSliderLogic();
     addDrawingLogic();
@@ -382,7 +163,7 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isStartEnabled = true;
-        document.getElementById("grid").style.cursor = "url('./assets/green.png'), auto";
+        grid.style.cursor = "url('./assets/blue.png'), auto";
 
         start.style.border = "4px solid gold";
         end.style.border = "0";
@@ -396,7 +177,7 @@ function addDrawingLogic() {
         isErasorEnabled = false;
         isDrawingEnabled = false;
         isEndEnabled = true;
-        document.getElementById("grid").style.cursor = "url('./assets/red.png'), auto";
+        grid.style.cursor = "url('./assets/red.png'), auto";
 
         end.style.border = "4px solid gold";
         start.style.border = "0";
@@ -410,7 +191,7 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isDrawingEnabled = false;
         isErasorEnabled = true;
-        document.getElementById("grid").style.cursor = "url('./assets/eraser.png'), auto";
+        grid.style.cursor = "url('./assets/eraser.png'), auto";
 
         erasor.style.border = "4px solid gold";
         end.style.border = "0";
@@ -423,7 +204,7 @@ function addDrawingLogic() {
         isEndEnabled = false;
         isErasorEnabled = false;
         isDrawingEnabled = true;
-        document.getElementById("grid").style.cursor = "url('./assets/white.png'), auto";
+        grid.style.cursor = "url('./assets/white.png'), auto";
 
         drawing.style.border = "4px solid gold";
         end.style.border = "0";
