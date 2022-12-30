@@ -13,8 +13,14 @@ JS-Graphs is a playground for pathfinding algorithms using simple `JS`, `HTML` a
 
 
 # Example images
+## Demo gif:
 ![Demo gif](./example_images/js-graphs.gif)
 
+## Grid layout:
 ![Example 1](./example_images/image_1.png)
+
+## Maze generation:
 ![Example 2](./example_images/image_2.png)
+
+## Pathfinding on custom map
 ![Example 3](./example_images/image_3.png)
