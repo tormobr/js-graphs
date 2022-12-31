@@ -49,8 +49,17 @@
 
             <div class="menu-items">
                 <div class="menu-col">
-                    <button class="help_button glow scale-on-hover" type="button" onClick="showHelpMenu()" title="Show help menu">Help?</button>
+                    <select class="glow" name="algo" id="algo" title="Select desired algorithm and hit 'Execute' to run it">
+                        <option value="clear">Reset grid</option>
+                        <option value="random">Random grid</option>
+                        <option value="maze">Generate maze</option>
+                        <option value="bfs">BFS pathfinding</option>
+                        <option value="dfs">DFS pathfinding</option>
+                        <option value="astar">A* pathfinding</option>
+                    </select>
+                    <button id="execute-button" class="execute_button glow" type="button" onClick="execute()" title="Execute selected action">Execute</button>
                 </div>
+
                 <div class="menu-col">
                     <div title="Set the start position">
                         <div id="start_cell" class="cell blue glow"> </div>
@@ -74,18 +83,6 @@
                 </div>
 
                 <div class="menu-col">
-                    <select class="glow" name="algo" id="algo" title="Select desired algorithm and hit 'Execute' to run it">
-                        <option value="clear">Reset grid</option>
-                        <option value="random">Random grid</option>
-                        <option value="maze">Generate maze</option>
-                        <option value="bfs">BFS pathfinding</option>
-                        <option value="dfs">DFS pathfinding</option>
-                        <option value="astar">A* pathfinding</option>
-                    </select>
-                    <button id="execute-button" class="execute_button glow" type="button" onClick="execute()" title="Execute selected action">Execute</button>
-                </div>
-
-                <div class="menu-col">
                     <div>
                         <select class="glow" name="heuristic_function" id="heuristic_function" title="Select what heuristic function that should be used for A-star search">
                             <option value="manhatten">Manhatten</option>
@@ -103,6 +100,9 @@
                         <input type="range" min="1" max="50" value="25" step="1" class="slider glow" id="animation_slider">
                         <p>Animation speed: <span id="animation_slider_value"></span></p>
                     </div>
+                </div>
+                <div class="menu-col">
+                    <button class="help_button glow scale-on-hover" type="button" onClick="showHelpMenu()" title="Show help menu">Help?</button>
                 </div>
             </div>
         </div>
