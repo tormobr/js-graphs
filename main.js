@@ -2,7 +2,7 @@ var dimY = 33;
 var dimX = 80;
 if (window.screen.width < 520) {
     dimY = 49;
-    dimX = 30;
+    dimX = 28;
 }
 var startXY = [0, 0]
 var targetXY = [dimX - 1, dimY - 1]
